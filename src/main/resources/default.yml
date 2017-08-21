@@ -1,0 +1,11 @@
+map.language: PD
+map.version: "http://identifiers.org/combine.specifications/sbgn.af.level-1.version-1.2"
+glyph:
+ class: attr.class
+arc:
+ class:
+  __location__: shape
+  none: consumption
+  standard: production
+  delta: production
+  white_diamond: modulation

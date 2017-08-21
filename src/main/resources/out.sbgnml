@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sbgn xmlns="http://sbgn.org/libsbgn/0.3">
+    <map language="process description" id="G">
+        <glyph class="compartment" id="n0">
+            <label text="Nucleus"/>
+            <bbox w="62.112183" h="184.71402" x="338.88782" y="142.28598"/>
+        </glyph>
+        <glyph class="macromolecule" id="n0__n0" compartmentRef="n0">
+            <label text="d1"/>
+            <bbox w="30.0" h="30.0" x="356.0" y="187.952"/>
+            <glyph class="state variable" id="n0__n0_1">
+                <state value="unit"/>
+                <bbox w="22.6272" h="8.2912" x="357.5" y="178.952"/>
+            </glyph>
+            <glyph class="unit of information" id="n0__n0_2">
+                <label text="test"/>
+                <bbox w="17.3024" h="11.568" x="358.5" y="208.952"/>
+            </glyph>
+        </glyph>
+        <glyph class="process" id="n0__n1" compartmentRef="n0">
+            <label text=""/>
+            <bbox w="30.0" h="30.0" x="356.0" y="282.0"/>
+        </glyph>
+        <glyph class="complex" id="n1">
+            <label text="d2 complex"/>
+            <bbox w="60.0" h="81.666016" x="475.0" y="245.33398"/>
+            <glyph class="macromolecule" id="n1__n0">
+                <label text="d2"/>
+                <bbox w="30.0" h="30.0" x="490.0" y="282.0"/>
+            </glyph>
+        </glyph>
+        <arc class="modulation" id="n0__e0" source="n0__n0" target="n0__n1">
+            <start x="356.0" y="187.952"/>
+            <end x="356.0" y="282.0"/>
+        </arc>
+        <arc class="production" id="e0" source="n0__n1" target="n1__n0">
+            <start x="356.0" y="282.0"/>
+            <end x="490.0" y="282.0"/>
+        </arc>
+    </map>
+</sbgn>
