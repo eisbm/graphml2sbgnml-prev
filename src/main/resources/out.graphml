@@ -6,13 +6,13 @@
     <key for="node" id="d3" yfiles.type="nodegraphics"/>
     <key for="edge" id="d4" yfiles.type="edgegraphics"/>
     <key for="graphml" id="d5" yfiles.type="resources"/>
-    <key attr.name="language" attr.type="string" for="graph" id="7d76"/>
-    <key attr.name="class" attr.type="string" for="node" id="2258"/>
-    <key attr.name="class" attr.type="string" for="edge" id="8145"/>
+    <key attr.name="language" attr.type="string" for="graph" id="00e1"/>
+    <key attr.name="class" attr.type="string" for="node" id="3382"/>
+    <key attr.name="class" attr.type="string" for="edge" id="721b"/>
     <graph edgedefault="directed" id="G">
-        <data key="7d76"><![CDATA[process description]]></data>
+        <data key="00e1"><![CDATA[process description]]></data>
         <node id="n0" yfiles.foldertype="group">
-            <data key="2258"><![CDATA[compartment]]></data>
+            <data key="3382"><![CDATA[compartment]]></data>
             <data key="d3">
                 <y:ProxyAutoBoundsNode>
                     <y:Realizers active="0">
@@ -28,7 +28,7 @@
             </data>
             <graph edgedefault="directed" id="n0_">
                 <node id="n0__n0">
-                    <data key="2258"><![CDATA[macromolecule]]></data>
+                    <data key="3382"><![CDATA[macromolecule]]></data>
                     <data key="d3">
                         <y:ShapeNode>
                             <y:Geometry height="31.174406" width="96.91362" x="356.0" y="187.952"/>
@@ -64,7 +64,7 @@
                     </data>
                 </node>
                 <node id="n0__n1">
-                    <data key="2258"><![CDATA[process]]></data>
+                    <data key="3382"><![CDATA[process]]></data>
                     <data key="d3">
                         <y:ShapeNode>
                             <y:Geometry height="30.0" width="30.0" x="356.0" y="282.0"/>
@@ -78,7 +78,7 @@
             </graph>
         </node>
         <node id="n1" yfiles.foldertype="group">
-            <data key="2258"><![CDATA[complex]]></data>
+            <data key="3382"><![CDATA[complex]]></data>
             <data key="d3">
                 <y:ProxyAutoBoundsNode>
                     <y:Realizers active="0">
@@ -94,7 +94,7 @@
             </data>
             <graph edgedefault="directed" id="n1_">
                 <node id="n1__n0">
-                    <data key="2258"><![CDATA[macromolecule]]></data>
+                    <data key="3382"><![CDATA[macromolecule]]></data>
                     <data key="d3">
                         <y:ShapeNode>
                             <y:Geometry height="30.0" width="30.0" x="490.0" y="282.0"/>
@@ -116,7 +116,7 @@
                     <y:BendStyle smoothed="false"/>
                 </y:PolyLineEdge>
             </data>
-            <data key="8145"><![CDATA[modulation]]></data>
+            <data key="721b"><![CDATA[modulation]]></data>
         </edge>
         <edge id="e0" source="n0__n1" target="n1__n0">
             <data key="d4">
@@ -127,7 +127,7 @@
                     <y:BendStyle smoothed="false"/>
                 </y:PolyLineEdge>
             </data>
-            <data key="8145"><![CDATA[production]]></data>
+            <data key="721b"><![CDATA[production]]></data>
         </edge>
     </graph>
     <data key="d5">

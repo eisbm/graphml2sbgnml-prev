@@ -8,16 +8,17 @@ import org.sbfc.converter.exceptions.ReadModelException;
 import org.sbfc.converter.models.GeneralModel;
 import org.sbfc.converter.models.SBGNModel;
 import org.sbgn.bindings.*;
+import org.sbgn.bindings.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class SBGNML2GraphML extends GeneralConverter {
     static Logger LOG = LoggerFactory.getLogger(SBGNML2GraphML.class);
+
+    static java.util.Map<String, Glyph> portMap = new HashMap<>();
 
     public SBGNML2GraphML() {
 
@@ -103,14 +104,6 @@ public class SBGNML2GraphML extends GeneralConverter {
                 }
             }
 
-            Bbox bbox = glyph.getBbox();
-            node.setHeight(bbox.getH());
-            node.setWidth(bbox.getW());
-            node.setX(bbox.getX());
-            node.setY(bbox.getY());
-
-            node.setLabel(glyph.getLabel().getText());
-
             node.setShapeType("rectangle");
 
         }
@@ -119,16 +112,24 @@ public class SBGNML2GraphML extends GeneralConverter {
             node = new GMLSimpleNode(glyph.getId(), root);
             System.out.println("simple node nodegraphics");
 
-            Bbox bbox = glyph.getBbox();
-            node.setHeight(bbox.getH());
-            node.setWidth(bbox.getW());
-            node.setX(bbox.getX());
-            node.setY(bbox.getY());
-
-            node.setLabel(glyph.getLabel().getText());
-
             node.setShapeType("rectangle");
 
+            for(Port p: glyph.getPort()) {
+                portMap.put(p.getId(), glyph);
+            }
+        }
+
+        // common things
+        Bbox bbox = glyph.getBbox();
+        node.setHeight(bbox.getH());
+        node.setWidth(bbox.getW());
+        node.setX(bbox.getX());
+        node.setY(bbox.getY());
+
+        LOG.debug("glyph before label"+glyph+" "+glyph.getLabel());
+        System.out.println("glyph before label"+glyph+" "+glyph.getLabel());
+        if(glyph.getLabel() != null) {
+            node.setLabel(glyph.getLabel().getText());
         }
 
         // assign the created node to correct parent
@@ -186,8 +187,22 @@ public class SBGNML2GraphML extends GeneralConverter {
         System.out.println("convert edge");
         GMLEdge edge = new GMLEdge(arc.getId(), root);
 
-        edge.setSource(((Glyph) arc.getSource()).getId());
-        edge.setTarget(((Glyph) arc.getTarget()).getId());
+        if(arc.getSource() instanceof Port) {
+            Glyph parent = portMap.get(((Port) arc.getSource()).getId());
+            edge.setSource(parent.getId());
+        }
+        else {
+            edge.setSource(((Glyph) arc.getSource()).getId());
+        }
+
+        if(arc.getTarget() instanceof Port) {
+            Glyph parent = portMap.get(((Port) arc.getTarget()).getId());
+            edge.setTarget(parent.getId());
+        }
+        else {
+            edge.setTarget(((Glyph) arc.getTarget()).getId());
+
+        }
 
         Element polyLine = XMLElementFactory.getPolyLineEdgeElement();
 

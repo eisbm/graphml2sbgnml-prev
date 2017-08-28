@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class TestHierarchy implements HierarchicalVisitor {
+public class ConvertionVisitor implements HierarchicalVisitor {
 
     Sbgn sbgn;
     Map map;
@@ -21,7 +21,7 @@ public class TestHierarchy implements HierarchicalVisitor {
     GMLRoot root;
     InfoLookup lookup;
 
-    public TestHierarchy(GMLRoot root, InfoLookup lookup){
+    public ConvertionVisitor(GMLRoot root, InfoLookup lookup){
         this.stack = new Stack<>();
         this.glyphs = new ArrayList<>();
         this.arcs = new ArrayList<>();
@@ -76,7 +76,8 @@ public class TestHierarchy implements HierarchicalVisitor {
         this.glyphs.add(g);
         // we don't want to continue for nested complex subunits
         // as they are processed once in the complex convert
-        if(g.getClazz().equals(GlyphClazz.COMPLEX.toString()) || g.getClazz().equals(GlyphClazz.COMPLEX_MULTIMER.toString())) {
+        if(g.getClazz().equals(GlyphClazz.COMPLEX.toString())
+                || g.getClazz().equals(GlyphClazz.COMPLEX_MULTIMER.toString())) {
             return false;
         }
         return true;

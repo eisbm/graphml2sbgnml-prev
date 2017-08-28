@@ -16,13 +16,24 @@ import java.io.IOException;
 
 public class GraphML2SBGNML extends GeneralConverter {
 
+    private String configFileName = "src/main/resources/default.yml";
+
+    public GraphML2SBGNML() {
+        super();
+    }
+
+    public GraphML2SBGNML(String configFileName) {
+        super();
+        this.configFileName = configFileName;
+    }
+
     public Sbgn toSbgn(GMLRoot graphml) {
         System.out.println("converting");
         // guesser will help assign missing information to different elements
         Guesser guesser = new DefaultGuesser(graphml);
         Configuration conf = null;
         try {
-            conf = Configuration.readFromFile("src/main/resources/default.yml");
+            conf = Configuration.readFromFile(this.configFileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,7 +49,7 @@ public class GraphML2SBGNML extends GeneralConverter {
         map.setLanguage(language.toString());
 
 
-        TestHierarchy visitor = new TestHierarchy(graphml, lookup);
+        ConvertionVisitor visitor = new ConvertionVisitor(graphml, lookup);
         graphml.accept(visitor);
         map.getGlyph().addAll(visitor.glyphs);
         map.getArc().addAll(visitor.arcs);

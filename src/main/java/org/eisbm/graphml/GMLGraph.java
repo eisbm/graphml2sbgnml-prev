@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.XMLFormatter;
 
-public class GMLGraph extends GMLElement implements Visitable, HierarchyVisitable, XMLable{
+public class GMLGraph extends GMLElement implements HierarchyVisitable, XMLable{
     List<GMLNode> nodeList;
     Map<String, GMLNode> nodeMap;
     List<GMLEdge> edgeList;
@@ -49,17 +49,6 @@ public class GMLGraph extends GMLElement implements Visitable, HierarchyVisitabl
         }
 
         System.out.println("after parse graph "+this.id);
-    }
-
-    @Override
-    public void accept(GraphMLVisitor visitor) {
-        visitor.visit(this);
-        for(GMLNode node: this.nodeList) {
-            node.accept(visitor);
-        }
-        for(GMLEdge edge: this.edgeList) {
-            edge.accept(visitor);
-        }
     }
 
     @Override

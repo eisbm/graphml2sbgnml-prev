@@ -1,6 +1,5 @@
 package org.eisbm.graphml;
 
-import com.sun.tools.javac.util.Pair;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -11,7 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.*;
 
-public class GMLRoot extends GMLAbstractElement implements Visitable, HierarchyVisitable {
+public class GMLRoot extends GMLAbstractElement implements HierarchyVisitable {
     List<GMLPropertyDefinition> keyList;
     Map<String, GMLPropertyDefinition> keyMap;
     Map<String, GMLPropertyDefinition> nodeKeyNameMap;
@@ -35,15 +34,16 @@ public class GMLRoot extends GMLAbstractElement implements Visitable, HierarchyV
     xmlns:yed="http://www.yworks.com/xml/yed/3"
     xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd"
     */
-    public static List<Pair<String, String>> prefixes = Arrays.asList(
-            Pair.of("xmlns", "http://graphml.graphdrawing.org/xmlns"),
-            Pair.of("xmlns:java", "http://www.yworks.com/xml/yfiles-common/1.0/java"),
-            Pair.of("xmlns:sys", "http://www.yworks.com/xml/yfiles-common/markup/primitives/2.0"),
-            Pair.of("xmlns:x", "http://www.yworks.com/xml/yfiles-common/markup/2.0"),
-            Pair.of("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"),
-            Pair.of("xmlns:y", "http://www.yworks.com/xml/graphml"),
-            Pair.of("xmlns:yed","http://www.yworks.com/xml/yed/3" ),
-            Pair.of("xsi:schemaLocation", "http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd")
+    public static List<Map.Entry<String, String>> prefixes = Arrays.asList(
+            new AbstractMap.SimpleEntry<String, String>("xmlns", "http://graphml.graphdrawing.org/xmlns"),
+            new AbstractMap.SimpleEntry<String, String>("xmlns", "http://graphml.graphdrawing.org/xmlns"),
+            new AbstractMap.SimpleEntry<String, String>("xmlns:java", "http://www.yworks.com/xml/yfiles-common/1.0/java"),
+            new AbstractMap.SimpleEntry<String, String>("xmlns:sys", "http://www.yworks.com/xml/yfiles-common/markup/primitives/2.0"),
+            new AbstractMap.SimpleEntry<String, String>("xmlns:x", "http://www.yworks.com/xml/yfiles-common/markup/2.0"),
+            new AbstractMap.SimpleEntry<String, String>("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+            new AbstractMap.SimpleEntry<String, String>("xmlns:y", "http://www.yworks.com/xml/graphml"),
+            new AbstractMap.SimpleEntry<String, String>("xmlns:yed","http://www.yworks.com/xml/yed/3" ),
+            new AbstractMap.SimpleEntry<String, String>("xsi:schemaLocation", "http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd")
             );
 
     public GMLRoot() {
@@ -104,14 +104,6 @@ public class GMLRoot extends GMLAbstractElement implements Visitable, HierarchyV
     }
 
     @Override
-    public void accept(GraphMLVisitor visitor) {
-        visitor.visit(this);
-        for(GMLGraph graph: this.graphList) {
-            graph.accept(visitor);
-        }
-    }
-
-    @Override
     public boolean accept(HierarchicalVisitor visitor) {
         if(visitor.visitEnter(this)) {
             for(GMLGraph graph: this.graphList) {
@@ -134,8 +126,8 @@ public class GMLRoot extends GMLAbstractElement implements Visitable, HierarchyV
         Document rootDoc = db.newDocument();
         Element graphml = XMLElementFactory.getDocument().createElement("graphml");
         // append all prefixes
-        for(Pair<String, String> p: prefixes){
-            graphml.setAttribute(p.fst, p.snd);
+        for(Map.Entry<String, String> p: prefixes){
+            graphml.setAttribute(p.getKey(), p.getValue());
         }
 
         for(GMLPropertyDefinition propDef: this.keyList) {

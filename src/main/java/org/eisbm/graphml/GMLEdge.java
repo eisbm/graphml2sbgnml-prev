@@ -12,7 +12,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GMLEdge extends GMLElement implements Visitable, HierarchyVisitable {
+public class GMLEdge extends GMLElement implements HierarchyVisitable {
 
     String source;
     String target;
@@ -71,11 +71,6 @@ public class GMLEdge extends GMLElement implements Visitable, HierarchyVisitable
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void accept(GraphMLVisitor visitor) {
-        visitor.visit(this);
     }
 
     public String getClass_() {

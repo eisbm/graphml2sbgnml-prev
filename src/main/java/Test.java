@@ -26,7 +26,6 @@ public class Test {
         start.setX((float) 2.14);
         arc.setStart(start);
 
-        TestVisitor tvisit = new TestVisitor();
         VisitableArc varc = new VisitableArc(arc);
         //varc.accept(tvisit);
 
@@ -53,12 +52,6 @@ public class Test {
         System.out.println(gModel.graphml.getDataNameMap());
 
 
-
-        org.eisbm.graphml.TestVisitor gvisitor = new org.eisbm.graphml.TestVisitor();
-        gModel.graphml.accept(gvisitor);
-        System.out.println(gvisitor.types);
-        System.out.println(gvisitor.edges);
-
         GraphML2SBGNML converter = new GraphML2SBGNML();
         SBGNModel sbgnModel = new SBGNModel();
         try {
@@ -78,7 +71,7 @@ public class Test {
             e.printStackTrace();
         }
 
-        //TestHierarchy h = new TestHierarchy();
+        //ConvertionVisitor h = new ConvertionVisitor();
         //gModel.org.eisbm.graphml.accept(h);
 
         if(false) {

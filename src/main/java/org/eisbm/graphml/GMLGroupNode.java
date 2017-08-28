@@ -32,12 +32,6 @@ public class GMLGroupNode extends GMLNode {
     }
 
     @Override
-    public void accept(GraphMLVisitor visitor) {
-        visitor.visit(this);
-        this.graph.accept(visitor);
-    }
-
-    @Override
     public boolean accept(HierarchicalVisitor visitor) {
         if(visitor.visitEnter(this)) {
             this.graph.accept(visitor);

@@ -46,11 +46,6 @@ public class GMLSimpleNode extends GMLNode {
     }
 
     @Override
-    public void accept(GraphMLVisitor visitor) {
-        visitor.visit(this);
-    }
-
-    @Override
     public boolean accept(HierarchicalVisitor visitor) {
         return visitor.visitLeaf(this);
     }

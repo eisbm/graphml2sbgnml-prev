@@ -1,6 +1,7 @@
 
 org.eisbm.graphml
 org.eisbm.graphmlsbfc
+org.eisbm.graphmlsbfc.cli
 org.eisbm.graphmlsbfc.configuration
 org.eisbm.visitableClasses
 org.eisbm.visitor

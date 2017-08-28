@@ -12,7 +12,7 @@ import javax.xml.xpath.XPathFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GMLNode extends GMLElement implements Visitable, HierarchyVisitable {
+public abstract class GMLNode extends GMLElement implements HierarchyVisitable {
 
     float x, y, width, height;
 
