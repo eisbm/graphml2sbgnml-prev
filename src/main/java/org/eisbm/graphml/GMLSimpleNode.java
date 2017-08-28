@@ -1,12 +1,13 @@
 package org.eisbm.graphml;
 
+import org.sbgn.bindings.Bbox;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class GMLSimpleNode extends GMLNode {
 
-    public GMLSimpleNode(String id) {
-        super(id);
+    public GMLSimpleNode(String id, GMLRoot root) {
+        super(id,root);
     }
 
     public GMLSimpleNode(Element element, GMLRoot root) {
@@ -52,5 +53,44 @@ public class GMLSimpleNode extends GMLNode {
     @Override
     public boolean accept(HierarchicalVisitor visitor) {
         return visitor.visitLeaf(this);
+    }
+
+    @Override
+    public Element toXmlElement() {
+        Element nodeE = super.toXmlElement();
+
+        for(GMLProperty prop: this.dataList) {
+            // override the specific node properties
+            if(prop.getName().equals("nodegraphics")) {
+                continue;
+            }
+            nodeE.appendChild(prop.toXmlElement());
+        }
+
+        Element dataElement = XMLElementFactory.getDataElement(this.getRoot().getNodeKeyNameMap().get("nodegraphics").getId());
+
+        Element shapeNode = XMLElementFactory.getShapeNodeElement();
+        dataElement.appendChild(shapeNode);
+
+        shapeNode.appendChild(XMLElementFactory.getGeometryElement(
+                this.getHeight(), this.getWidth(), this.getX(), this.getY()));
+        shapeNode.appendChild(XMLElementFactory.getFillElement());
+        shapeNode.appendChild(XMLElementFactory.getBorderStyleElement());
+        //shapeNode.appendChild(XMLElementFactory.getNodeLabelElement(this.getLabel()));
+        shapeNode.appendChild(
+                new XMLElementFactory.NodeLabelBuilder()
+                        .setLabel(this.getLabel())
+                        .build()
+        );
+        shapeNode.appendChild(XMLElementFactory.getShapeElement(this.getShapeType()));
+
+        nodeE.appendChild(dataElement);
+
+        for(GMLLabelNode labelNode: this.getLabelNodes()) {
+            labelNode.injectIntoParentXML(nodeE);
+        }
+
+
+        return nodeE;
     }
 }

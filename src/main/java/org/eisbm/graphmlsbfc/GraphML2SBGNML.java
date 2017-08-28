@@ -120,7 +120,7 @@ public class GraphML2SBGNML extends GeneralConverter {
                     case "roundrectangle":
                         Glyph stateVar = new Glyph();
                         stateVar.setClazz("state variable");
-                        stateVar.setId(glyph.getId()+"_"+labelNode.getXMLValidId());
+                        stateVar.setId(glyph.getId()+"_"+GMLElement.xmlize(labelNode.getId()));
 
                         Bbox stateVarBox = new Bbox();
                         stateVarBox.setX(labelNode.getX());
@@ -138,7 +138,7 @@ public class GraphML2SBGNML extends GeneralConverter {
                     case "rectangle":
                         Glyph unitOfInfo = new Glyph();
                         unitOfInfo.setClazz("unit of information");
-                        unitOfInfo.setId(glyph.getId()+"_"+labelNode.getXMLValidId());
+                        unitOfInfo.setId(glyph.getId()+"_"+GMLElement.xmlize(labelNode.getId()));
 
                         Bbox unitBox = new Bbox();
                         unitBox.setX(labelNode.getX());

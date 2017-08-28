@@ -3,18 +3,22 @@
     <map language="process description" id="G">
         <glyph class="compartment" id="n0">
             <label text="Nucleus"/>
-            <bbox w="62.112183" h="184.71402" x="338.88782" y="142.28598"/>
+            <bbox w="129.0258" h="189.59305" x="338.88782" y="137.40695"/>
         </glyph>
         <glyph class="macromolecule" id="n0__n0" compartmentRef="n0">
             <label text="d1"/>
-            <bbox w="30.0" h="30.0" x="356.0" y="187.952"/>
+            <bbox w="96.91362" h="31.174406" x="356.0" y="187.952"/>
             <glyph class="state variable" id="n0__n0_1">
                 <state value="unit"/>
-                <bbox w="22.6272" h="8.2912" x="357.5" y="178.952"/>
+                <bbox w="22.6272" h="8.2912" x="353.88782" y="183.03119"/>
             </glyph>
             <glyph class="unit of information" id="n0__n0_2">
                 <label text="test"/>
-                <bbox w="17.3024" h="11.568" x="358.5" y="208.952"/>
+                <bbox w="17.3024" h="11.568" x="351.76157" y="184.66959"/>
+            </glyph>
+            <glyph class="unit of information" id="n0__n0_3">
+                <label text="fff"/>
+                <bbox w="33.072" h="9.52" x="363.91785" y="183.64558"/>
             </glyph>
         </glyph>
         <glyph class="process" id="n0__n1" compartmentRef="n0">

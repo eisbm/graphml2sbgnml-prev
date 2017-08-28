@@ -1,5 +1,6 @@
 package org.eisbm.graphmlsbfc;
 
+import com.sun.webkit.dom.CDATASectionImpl;
 import org.eisbm.graphml.*;
 import org.sbfc.converter.GeneralConverter;
 import org.sbfc.converter.exceptions.ConversionException;
@@ -9,30 +10,14 @@ import org.sbfc.converter.models.SBGNModel;
 import org.sbgn.bindings.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class SBGNML2GraphML extends GeneralConverter {
     static Logger LOG = LoggerFactory.getLogger(SBGNML2GraphML.class);
-
-    static Document dummyDoc;
-    static {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = null;
-        try {
-            db = dbf.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-        dummyDoc = db.newDocument();
-    }
 
     public SBGNML2GraphML() {
 
@@ -45,24 +30,29 @@ public class SBGNML2GraphML extends GeneralConverter {
         for(GMLPropertyDefinition propDef: getDefaultKeys()) {
             root.addPropertyDefinition(propDef);
         }
+        // add the default resource data section
+        root.addComplexDataFor("resources", XMLElementFactory.getResourcesElement());
 
         // add main graph element
         Map mainMap = sbgn.getMap().get(0);
-        GMLGraph mainGraph = new GMLGraph(mainMap.getId());
+        GMLGraph mainGraph = new GMLGraph(mainMap.getId(), root);
+        root.addGraph(mainGraph);
+
+        // add some data to the main graph
+        mainGraph.addSimpleDataFor("language", mainMap.getLanguage());
 
         for(Glyph glyph: mainMap.getGlyph()) {
-            GMLNode node = convert(glyph, root);
-            mainGraph.addNode(node);
+            GMLNode node = convert(glyph, root, false);
+            //mainGraph.addNode(node);
         }
 
-        /*for(Arc arc: mainMap.getArc()) {
+        for(Arc arc: mainMap.getArc()) {
             GMLEdge edge = convert(arc, root);
-            mainGraph.addEdge(edge);
-        }*/
+        }
 
 
 
-        root.addGraph(mainGraph);
+
 
         return root;
     }
@@ -95,34 +85,96 @@ public class SBGNML2GraphML extends GeneralConverter {
         return null;
     }
 
-    public static GMLNode convert(Glyph glyph, GMLRoot root) {
+    public static GMLNode convert(Glyph glyph, GMLRoot root, boolean doExternallyAssignParent) {
         System.out.println("convert glyph "+glyph);
         GMLNode node;
-        if(glyph.getClazz().equals("compartment") ||
-                glyph.getClazz().equals("complex") ||
-                glyph.getClazz().equals("complex multimer")){
-            node =new GMLGroupNode(glyph.getId());
+        String glyphClass = glyph.getClazz();
+        // group nodes case
+        if(glyphClass.equals("compartment") ||
+                glyphClass.equals("complex") ||
+                glyphClass.equals("complex multimer")){
+            node =new GMLGroupNode(glyph.getId(), root);
+
+            // in the case of complexes, we need to traverse subunits now
+            if(glyphClass.equals("complex") || glyphClass.equals("complex multimer")){
+                for(Glyph subunit: glyph.getGlyph()) {
+                    GMLNode subNode = convert(subunit, root, true);
+                    ((GMLGroupNode) node).getGraph().addNode(subNode, root);
+                }
+            }
+
+            Bbox bbox = glyph.getBbox();
+            node.setHeight(bbox.getH());
+            node.setWidth(bbox.getW());
+            node.setX(bbox.getX());
+            node.setY(bbox.getY());
+
+            node.setLabel(glyph.getLabel().getText());
+
+            node.setShapeType("rectangle");
+
         }
+        // other cases (normal leaf nodes)
         else {
-            node = new GMLSimpleNode(glyph.getId());
+            node = new GMLSimpleNode(glyph.getId(), root);
             System.out.println("simple node nodegraphics");
 
-            Element data = dummyDoc.createElement("data");
-            data.setAttribute("key", "d3");
+            Bbox bbox = glyph.getBbox();
+            node.setHeight(bbox.getH());
+            node.setWidth(bbox.getW());
+            node.setX(bbox.getX());
+            node.setY(bbox.getY());
 
-            Element shapeNode = dummyDoc.createElement("y:ShapeNode");
-            shapeNode.appendChild(getGeometryElement(glyph.getBbox()));
-            shapeNode.appendChild(getFillElement());
-            shapeNode.appendChild(getBorderStyleElement());
-            shapeNode.appendChild(getNodeLabelElement(glyph.getLabel().getText()));
-            shapeNode.appendChild(getShapeElement(glyph.getClazz()));
-            data.appendChild(shapeNode);
+            node.setLabel(glyph.getLabel().getText());
 
-            //GMLComplexProperty prop = new GMLComplexProperty();
-            node.addData(new GMLComplexProperty(data, root));
-
+            node.setShapeType("rectangle");
 
         }
+
+        // assign the created node to correct parent
+        if(!doExternallyAssignParent) {
+            if (glyph.getCompartmentRef() == null) {
+                System.out.println("add node to root " + node);
+                root.graphList.get(0).addNode(node, root);
+            } else {
+                System.out.println("add node to other node " + glyph.getCompartmentRef());
+                String compartmentId = ((Glyph) glyph.getCompartmentRef()).getId();
+                GMLGroupNode groupNode = (GMLGroupNode) root.nodeMap.get(compartmentId);
+                groupNode.getGraph().addNode(node, root);
+            }
+        }
+
+        // go through the node's unit of info/state var
+        for(Glyph auxUnit: glyph.getGlyph()) {
+            String auxUnitClass = auxUnit.getClazz();
+            if(auxUnitClass.equals("unit of information")
+                    || auxUnitClass.equals("state variable")) {
+                System.out.println("found auxunit: "+ auxUnit.getClazz());
+                GMLLabelNode labelNode = new GMLLabelNode(auxUnit.getId(), node);
+                node.getLabelNodes().add(labelNode);
+
+                String label;
+                String shapeType;
+                if(auxUnitClass.equals("unit of information")){
+                    label = auxUnit.getLabel().getText();
+                    shapeType = "rectangle";
+                }
+                else {
+                    label = auxUnit.getState().getVariable()+"@"+auxUnit.getState().getVariable();
+                    shapeType = "roundrectangle";
+                }
+                labelNode.setLabel(label);
+                labelNode.setShapeType(shapeType);
+
+                labelNode.setX(auxUnit.getBbox().getX());
+                labelNode.setY(auxUnit.getBbox().getY());
+                labelNode.setWidth(auxUnit.getBbox().getW());
+                labelNode.setHeight(auxUnit.getBbox().getH());
+            }
+        }
+
+        // add all possible additional information as data
+        node.addSimpleDataFor("class", glyph.getClazz());
 
 
 
@@ -130,64 +182,31 @@ public class SBGNML2GraphML extends GeneralConverter {
 
     }
 
-    public static Element getGeometryElement(Bbox bbox) {
-        Element geomE = dummyDoc.createElement("y:Geometry");
-        geomE.setAttribute("height", Float.toString(bbox.getH()));
-        geomE.setAttribute("width", Float.toString(bbox.getW()));
-        geomE.setAttribute("x", Float.toString(bbox.getX()));
-        geomE.setAttribute("y", Float.toString(bbox.getY()));
-        return geomE;
-    }
-
-    public static Element getFillElement() {
-        Element fillE = dummyDoc.createElement("y:Fill");
-        fillE.setAttribute("color", "#FFFFFF");
-        fillE.setAttribute("transparent", "false");
-        return fillE;
-    }
-
-    public static Element getBorderStyleElement() {
-        Element borderStyleE = dummyDoc.createElement("y:BorderStyle");
-        borderStyleE.setAttribute("color", "#000000");
-        borderStyleE.setAttribute("raised", "false");
-        borderStyleE.setAttribute("type", "line");
-        borderStyleE.setAttribute("width", "1.0");
-        return borderStyleE;
-    }
-
-    public static Element getNodeLabelElement(String label) {
-        Element nodeLabelE = dummyDoc.createElement("y:NodeLabel");
-        /*nodeLabelE.setAttribute("alignment", "center");
-        nodeLabelE.setAttribute("autoSizePolicy", "content");
-        nodeLabelE.setAttribute("fontFamily", "Dialog");
-        nodeLabelE.setAttribute("fontSize", "12");
-        nodeLabelE.setAttribute("fontStyle", "plain");
-        nodeLabelE.setAttribute("hasBackgroundColor", "false");
-        nodeLabelE.setAttribute("hasLineColor", "false");*/
-        nodeLabelE.setTextContent(label);
-
-        return nodeLabelE;
-    }
-
-    public static Element getShapeElement(String clazz) {
-        Element shapeE = dummyDoc.createElement("y:Shape");
-        String shapeType = "";
-        switch(clazz) {
-            case "macromolecule":
-            case "macromolecule multimer":
-                shapeType = "roundrectangle";
-                break;
-            default:
-                shapeType = "rectangle";
-        }
-
-
-        shapeE.setAttribute("type", shapeType);
-        return shapeE;
-    }
-
     public static GMLEdge convert(Arc arc, GMLRoot root) {
-        return new GMLEdge("idtest");
+        System.out.println("convert edge");
+        GMLEdge edge = new GMLEdge(arc.getId(), root);
+
+        edge.setSource(((Glyph) arc.getSource()).getId());
+        edge.setTarget(((Glyph) arc.getTarget()).getId());
+
+        Element polyLine = XMLElementFactory.getPolyLineEdgeElement();
+
+        polyLine.appendChild(XMLElementFactory.getPathElement());
+        polyLine.appendChild(XMLElementFactory.getLineStyleElement());
+
+        polyLine.appendChild(XMLElementFactory.getArrowsElement("none", "none"));
+
+        polyLine.appendChild(XMLElementFactory.getBendStyleElement());
+
+
+        edge.addComplexDataFor("edgegraphics", polyLine);
+
+        root.graphList.get(0).addEdge(edge);
+
+        // add all possible additional information as data
+        edge.addSimpleDataFor("class", arc.getClazz());
+
+        return edge;
     }
 
     // default set of key definitions that should always be present in the graphml

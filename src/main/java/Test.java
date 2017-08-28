@@ -42,6 +42,7 @@ public class Test {
         //String testFile = "src/main/resources/test_simple.graphml";
         //String testFile = "src/main/resources/test.graphml";
         String testFile = "src/main/resources/test2.graphml";
+        //String testFile = "src/main/resources/out.graphml";
 
         GraphMLModel gModel = new GraphMLModel();
         try {
@@ -49,7 +50,7 @@ public class Test {
         } catch (ReadModelException e) {
             e.printStackTrace();
         }
-        System.out.println(gModel.graphml.dataNameMap);
+        System.out.println(gModel.graphml.getDataNameMap());
 
 
 

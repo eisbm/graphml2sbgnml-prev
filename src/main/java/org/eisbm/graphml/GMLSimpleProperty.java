@@ -32,11 +32,10 @@ public class GMLSimpleProperty extends GMLProperty {
     }
 
     @Override
-    public Element toXmlElement(Element parent, Document root) {
-        Element data = root.createElement("data");
-        data.setAttribute("key", this.definition.id);
+    public Element toXmlElement() {
+        Element data = XMLElementFactory.getDataElement(this.getDefinition().getId());
         if(this.getValue() != null) {
-            Node cdataContent = root.createCDATASection(this.getValue());
+            Node cdataContent = XMLElementFactory.getCDATA(this.getValue());
             System.out.println("cdata " + cdataContent + " " + cdataContent.getNodeValue());
             data.appendChild(cdataContent);
         }

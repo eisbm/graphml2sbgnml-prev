@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.XMLFormatter;
 
 public class GMLGraph extends GMLElement implements Visitable, HierarchyVisitable, XMLable{
     List<GMLNode> nodeList;
@@ -17,8 +18,8 @@ public class GMLGraph extends GMLElement implements Visitable, HierarchyVisitabl
     List<GMLEdge> edgeList;
     Map<String, GMLEdge> edgeMap;
 
-    public GMLGraph(String id) {
-        super(id);
+    public GMLGraph(String id, GMLRoot root) {
+        super(id, root);
         this.nodeList = new ArrayList<>();
         this.nodeMap = new HashMap<>();
         this.edgeList = new ArrayList<>();
@@ -38,8 +39,7 @@ public class GMLGraph extends GMLElement implements Visitable, HierarchyVisitabl
             if(n.getNodeName().equals("node")) {
                 Element nodeElement = (Element) n;
                 GMLNode gNode = GMLNode.createNode(nodeElement, root);
-                this.addNode(gNode);
-                root.nodeMap.put(gNode.id, gNode);
+                this.addNode(gNode, root);
             }
             else if(n.getNodeName().equals("edge")) {
                 Element edgeElement = (Element) n;
@@ -112,29 +112,28 @@ public class GMLGraph extends GMLElement implements Visitable, HierarchyVisitabl
     }
 
     @Override
-    public Element toXmlElement(Element parent, Document root) {
-        Element graphE = root.createElement("graph");
-        graphE.setAttribute("id", this.getId());
-        graphE.setAttribute("edgedefault", "directed");
+    public Element toXmlElement() {
+        Element graphE = XMLElementFactory.getGraphElement(this.getId());
 
         for(GMLProperty prop: this.dataList) {
-            graphE.appendChild(prop.toXmlElement(graphE, root));
+            graphE.appendChild(prop.toXmlElement());
         }
 
         for(GMLNode node: this.nodeList) {
-            graphE.appendChild(node.toXmlElement(graphE, root));
+            graphE.appendChild(node.toXmlElement());
         }
 
         for(GMLEdge edge: this.edgeList) {
-            graphE.appendChild(edge.toXmlElement(graphE, root));
+            graphE.appendChild(edge.toXmlElement());
         }
 
         return graphE;
     }
 
-    public void addNode(GMLNode node) {
+    public void addNode(GMLNode node, GMLRoot root) {
         this.nodeList.add(node);
         this.nodeMap.put(node.id, node);
+        root.nodeMap.put(node.id, node);
     }
 
     public void addEdge(GMLEdge edge) {

@@ -35,12 +35,11 @@ public class GMLComplexProperty extends GMLProperty {
     }
 
     @Override
-    public Element toXmlElement(Element parent, Document root) {
-        Element data = root.createElement("data");
-        data.setAttribute("key", this.definition.id);
+    public Element toXmlElement() {
+        Element data = XMLElementFactory.getDataElement(this.getDefinition().getId());
         // here just appending an element as is gives an error, wrong document owner.
         // We need to import the node.
-        data.appendChild(root.importNode(this.getValue(),true));
+        data.appendChild(this.getValue());
         return data;
     }
 }

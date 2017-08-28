@@ -1,5 +1,6 @@
 package org.eisbm.graphml;
 
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -9,29 +10,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GMLElement implements XMLable {
+public abstract class GMLElement extends GMLAbstractElement implements XMLable {
     String id;
-    List<GMLProperty> dataList;
-    public Map<String, GMLProperty> dataMap;
-    public Map<String, GMLProperty> dataNameMap;
+    GMLRoot root;
 
-    public GMLElement(String id) {
+    public GMLElement(String id, GMLRoot root) {
+        super();
         this.id = id;
-        this.dataList = new ArrayList<>();
-        this.dataMap = new HashMap<>();
-        this.dataNameMap = new HashMap<>();
+        this.root = root;
     }
 
     public GMLElement(Element element, GMLRoot root) {
+        super();
         this.id = element.getAttribute("id");
-        this.dataList = new ArrayList<>();
-        this.dataMap = new HashMap<>();
-        this.dataNameMap = new HashMap<>();
+        this.root = root;
 
         NodeList nList = element.getChildNodes();
         for(int i=0; i < nList.getLength(); i++) {
             Node n = nList.item(i);
-            if(n.getNodeName() == "data") {
+            if(n.getNodeName().equals("data")) {
                 Element dataElement = (Element) n;
                 GMLProperty prop = GMLProperty.createProperty(dataElement, root);
                 this.addData(prop);
@@ -44,6 +41,19 @@ public abstract class GMLElement implements XMLable {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public GMLRoot getRoot() {
+        return root;
+    }
+
+    public void setRoot(GMLRoot root) {
+        this.root = root;
+    }
+
+
     public static String xmlize(String s){
         return s.replaceAll(":", "_");
     }
@@ -52,38 +62,16 @@ public abstract class GMLElement implements XMLable {
          return xmlize(this.getId());
     }
 
-    public void setId(String id) {
-        this.id = id;
+
+
+    @Override
+    public void addComplexDataFor(String name, Element element) {
+        this.addComplexDataFor(name, element, this.root);
     }
 
-    public List<GMLProperty> getDataList() {
-        return dataList;
-    }
-
-    public void setDataList(List<GMLProperty> dataList) {
-        this.dataList = dataList;
-    }
-
-    public Map<String, GMLProperty> getDataMap() {
-        return dataMap;
-    }
-
-    public void setDataMap(Map<String, GMLProperty> dataMap) {
-        this.dataMap = dataMap;
-    }
-
-    public Map<String, GMLProperty> getDataNameMap() {
-        return dataNameMap;
-    }
-
-    public void setDataNameMap(Map<String, GMLProperty> dataNameMap) {
-        this.dataNameMap = dataNameMap;
-    }
-
-    public void addData(GMLProperty prop) {
-        this.dataList.add(prop);
-        this.dataMap.put(prop.definition.id, prop);
-        this.dataNameMap.put(prop.getName(), prop);
+    @Override
+    public void addSimpleDataFor(String name, String data) {
+        this.addSimpleDataFor(name, data, this.root);
     }
 
 }

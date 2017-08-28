@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GMLEdge extends GMLElement implements Visitable, HierarchyVisitable {
+
     String source;
     String target;
     List<Point2D.Float> points;
@@ -21,8 +22,8 @@ public class GMLEdge extends GMLElement implements Visitable, HierarchyVisitable
     String sourceArrowShape;
     String targetArrowShape;
 
-    public GMLEdge(String id) {
-        super(id);
+    public GMLEdge(String id, GMLRoot root) {
+        super(id, root);
     }
 
     public GMLEdge(Element element, GMLRoot root) {
@@ -119,6 +120,18 @@ public class GMLEdge extends GMLElement implements Visitable, HierarchyVisitable
         return this.points;
     }
 
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public void setPoints(List<Point2D.Float> points) {
+        this.points = points;
+    }
+
     @Override
     public boolean accept(HierarchicalVisitor visitor) {
         return visitor.visitLeaf(this);
@@ -140,14 +153,11 @@ public class GMLEdge extends GMLElement implements Visitable, HierarchyVisitable
     }
 
     @Override
-    public Element toXmlElement(Element parent, Document root) {
-        Element edgeE = root.createElement("edge");
-        edgeE.setAttribute("id", this.getId());
-        edgeE.setAttribute("source", this.getSource());
-        edgeE.setAttribute("target", this.getTarget());
+    public Element toXmlElement() {
+        Element edgeE = XMLElementFactory.getEdgeElement(this.getId(), this.getSource(), this.getTarget());
 
         for(GMLProperty prop: this.dataList) {
-            edgeE.appendChild(prop.toXmlElement(edgeE, root));
+            edgeE.appendChild(prop.toXmlElement());
         }
 
         return edgeE;

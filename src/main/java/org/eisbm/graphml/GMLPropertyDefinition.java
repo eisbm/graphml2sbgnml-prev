@@ -52,15 +52,26 @@ public class GMLPropertyDefinition implements XMLable{
     }
 
     @Override
-    public Element toXmlElement(Element parent, Document root) {
-        Element keyE = root.createElement("key");
-        keyE.setAttribute("id", this.getId());
-        keyE.setAttribute("for", this.getFor_());
+    public Element toXmlElement() {
+        Element keyE = XMLElementFactory.getKeyElement(this.getId(), this.getFor_());
+
         for(String s: this.getAttributes().keySet()){
             keyE.setAttribute(s, this.getAttributes().get(s));
         }
 
         return keyE;
+    }
+
+    public String getName() {
+        if(this.attributes.containsKey("attr.name")){
+            return this.getAttributeValue("attr.name");
+        }
+        else if(this.attributes.containsKey("yfiles.type")){
+            return this.getAttributeValue("yfiles.type");
+        }
+        else {
+            return this.id;
+        }
     }
 
     public String getId() {

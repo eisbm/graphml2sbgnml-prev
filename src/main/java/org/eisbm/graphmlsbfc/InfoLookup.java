@@ -46,11 +46,11 @@ public class InfoLookup {
                 case MAP_TO_ATTR:
                     String attrName = mapLang.getMappedLocation();
                     GMLGraph firstGraph = graphml.graphList.get(0);
-                    return getLanguageFromData(attrName, graphml.dataNameMap, firstGraph.dataNameMap);
+                    return getLanguageFromData(attrName, graphml.getDataNameMap(), firstGraph.getDataNameMap());
                 case MAP_TO_ID:
                     String attrId = mapLang.getMappedLocation();
                     firstGraph = graphml.graphList.get(0);
-                    return getLanguageFromData(attrId, graphml.dataMap, firstGraph.dataMap);
+                    return getLanguageFromData(attrId, graphml.getDataMap(), firstGraph.getDataMap());
             }
 
         }
@@ -123,13 +123,13 @@ public class InfoLookup {
                     return (GlyphClazz) glyphClass.getValue();
                 case MAP_TO_ATTR:
                     String attrName = glyphClass.getMappedLocation();
-                    return getGlyphClassFromString(getGlyphClassFromData(attrName, node.dataNameMap));
+                    return getGlyphClassFromString(getGlyphClassFromData(attrName, node.getDataNameMap()));
                 case MAP_TO_ID:
                     String attrId = glyphClass.getMappedLocation();
-                    return getGlyphClassFromString(getGlyphClassFromData(attrId, node.dataMap));
+                    return getGlyphClassFromString(getGlyphClassFromData(attrId, node.getDataMap()));
                 case CUSTOM_MAP_TO_ATTR:
                     attrName =  glyphClass.getMappedLocation();
-                    String attrValue = getGlyphClassFromData(attrName, node.dataNameMap);
+                    String attrValue = getGlyphClassFromData(attrName, node.getDataNameMap());
                     HashMap<String, String> customMap = (HashMap<String, String>) glyphClass.getValue();
                     if(customMap.containsKey(attrValue)) {
                         return getGlyphClassFromString(customMap.get(attrValue));
@@ -140,7 +140,7 @@ public class InfoLookup {
                     }
                 case CUSTOM_MAP_TO_ID:
                     attrId =  glyphClass.getMappedLocation();
-                    attrValue = getGlyphClassFromData(attrId, node.dataMap);
+                    attrValue = getGlyphClassFromData(attrId, node.getDataMap());
                     customMap = (HashMap<String, String>) glyphClass.getValue();
                     if(customMap.containsKey(attrValue)) {
                         return getGlyphClassFromString(customMap.get(attrValue));
@@ -218,13 +218,13 @@ public class InfoLookup {
                     return (ArcClazz) arcClass.getValue();
                 case MAP_TO_ATTR:
                     String attrName = arcClass.getMappedLocation();
-                    return getArcClassFromString(getArcClassFromData(attrName, edge.dataNameMap));
+                    return getArcClassFromString(getArcClassFromData(attrName, edge.getDataNameMap()));
                 case MAP_TO_ID:
                     String attrId = arcClass.getMappedLocation();
-                    return getArcClassFromString(getArcClassFromData(attrId, edge.dataMap));
+                    return getArcClassFromString(getArcClassFromData(attrId, edge.getDataMap()));
                 case CUSTOM_MAP_TO_ATTR:
                     attrName =  arcClass.getMappedLocation();
-                    String attrValue = getArcClassFromData(attrName, edge.dataNameMap);
+                    String attrValue = getArcClassFromData(attrName, edge.getDataNameMap());
                     HashMap<String, String> customMap = (HashMap<String, String>) arcClass.getValue();
                     if(customMap.containsKey(attrValue)) {
                         return getArcClassFromString(customMap.get(attrValue));
@@ -235,7 +235,7 @@ public class InfoLookup {
                     }
                 case CUSTOM_MAP_TO_ID:
                     attrId =  arcClass.getMappedLocation();
-                    attrValue = getGlyphClassFromData(attrId, edge.dataMap);
+                    attrValue = getGlyphClassFromData(attrId, edge.getDataMap());
                     customMap = (HashMap<String, String>) arcClass.getValue();
                     if(customMap.containsKey(attrValue)) {
                         return getArcClassFromString(customMap.get(attrValue));

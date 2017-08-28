@@ -17,7 +17,9 @@ public abstract class GMLProperty implements XMLable{
         NodeList groupList = dataElement.getElementsByTagName("y:ProxyAutoBoundsNode");
         NodeList shapenodeList = dataElement.getElementsByTagName("y:ShapeNode");
         NodeList shapeedgeList = dataElement.getElementsByTagName("y:PolyLineEdge");
-        if(groupList.getLength() > 0 || shapenodeList.getLength() > 0 || shapeedgeList.getLength() > 0) {
+        NodeList resourceList = dataElement.getElementsByTagName("y:Resources");
+        if(groupList.getLength() > 0 || shapenodeList.getLength() > 0
+                || shapeedgeList.getLength() > 0 || resourceList.getLength() > 0) {
             return new GMLComplexProperty(dataElement, root);
         }
         else {
@@ -26,15 +28,7 @@ public abstract class GMLProperty implements XMLable{
     }
 
     public String getName() {
-        if(this.definition.attributes.containsKey("attr.name")){
-            return this.definition.getAttributeValue("attr.name");
-        }
-        else if(this.definition.attributes.containsKey("yfiles.type")){
-            return this.definition.getAttributeValue("yfiles.type");
-        }
-        else {
-            return this.definition.id;
-        }
+        return this.getDefinition().getName();
     }
 
     public GMLPropertyDefinition getDefinition() {
