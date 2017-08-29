@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -19,7 +20,7 @@ import javafx.stage.Stage;
 import org.eisbm.graphmlsbfc.cli.Graphml2sbgnml;
 import org.eisbm.graphmlsbfc.cli.Sbgnml2graphml;
 
-import java.io.File;
+import java.io.*;
 
 public class App extends Application {
 
@@ -31,12 +32,16 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Graphml <-> Sbgnml");
 
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(10, 10, 10, 10));
+
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
+        //grid.setPadding(new Insets(25, 25, 25, 25));
+        vbox.getChildren().add(grid);
 
         /*Text scenetitle = new Text("Welcome");
         scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -135,7 +140,16 @@ public class App extends Application {
             }
         });
 
-        Scene scene = new Scene(grid);
+        // --- console --- //
+        TextArea console = new TextArea();
+        console.setEditable(false);
+        //grid.add(console, 0, 5, 4, 1);
+        vbox.getChildren().add(console);
+        PrintStream printStream = new PrintStream(new TextOutputStream(console));
+        System.setOut(printStream);
+        System.setErr(printStream);
+
+        Scene scene = new Scene(vbox, 800, 400);
         primaryStage.setScene(scene);
 
 
@@ -157,5 +171,21 @@ public class App extends Application {
         );
 
         primaryStage.show();
+    }
+
+    public class TextOutputStream extends OutputStream {
+        TextArea textArea;
+
+        public TextOutputStream(TextArea textArea){
+            this.textArea = textArea;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            // redirects data to the text area
+            textArea.appendText(String.valueOf((char)b));
+            // scrolls the text area to the end of data
+            textArea.positionCaret(textArea.getText().length());
+        }
     }
 }
