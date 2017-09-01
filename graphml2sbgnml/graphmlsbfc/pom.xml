@@ -4,16 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.eisbm</groupId>
-    <artifactId>graphml2sbgnml</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <parent>
+            <groupId>org.eisbm</groupId>
+            <artifactId>graphml2sbgnml</artifactId>
+            <version>1.0</version>
+    </parent>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+    <groupId>org.eisbm</groupId>
+    <artifactId>graphmlsbfc</artifactId>
+    <version>1.0</version>
 
     <dependencies>
+
         <dependency>
             <!-- build from libsbgn repo
                  in org.sbgn/
@@ -22,16 +24,16 @@
             <groupId>org.sbgn</groupId>
             <artifactId>org.sbgn-with-dependencies</artifactId>
             <version>0.3</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/org.sbgn-with-dependencies.jar</systemPath>
+            <!--<scope>system</scope>
+            <systemPath>${project.basedir}/lib/org.sbgn-with-dependencies.jar</systemPath>-->
         </dependency>
 
         <dependency>
             <groupId>org.sbfc</groupId>
             <artifactId>sbfc-1.3.7</artifactId>
             <version>1.3.7</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/sbfc-1.3.7.jar</systemPath>
+            <!--<scope>system</scope>
+            <systemPath>${project.basedir}/lib/sbfc-1.3.7.jar</systemPath>-->
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
@@ -58,6 +60,12 @@
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
             <version>1.72</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eisbm</groupId>
+            <artifactId>graphml</artifactId>
+            <version>1.0</version>
         </dependency>
 
     </dependencies>
