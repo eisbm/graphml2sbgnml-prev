@@ -86,6 +86,49 @@
 				  </filesets>
 				</configuration>
 			</plugin>
+
+			<!-- generate javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<executions>
+					<execution>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>aggregate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		    <!-- copy javadoc to docs/ folder -->
+		    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <generateProjectInfo>false</generateProjectInfo>
+                            <generateReports>false</generateReports>
+                            <outputDirectory>${project.basedir}/../docs</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/site/apidocs</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
 		</plugins>
     </build>
 
