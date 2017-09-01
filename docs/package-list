@@ -1,7 +1,5 @@
-
 org.eisbm.graphml
+org.eisbm.graphml2sbgnml.cli
+org.eisbm.graphml2sbgnml.gui
 org.eisbm.graphmlsbfc
-org.eisbm.graphmlsbfc.cli
 org.eisbm.graphmlsbfc.configuration
-org.eisbm.visitableClasses
-org.eisbm.visitor
