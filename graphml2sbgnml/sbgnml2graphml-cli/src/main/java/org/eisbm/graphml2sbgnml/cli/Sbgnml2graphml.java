@@ -1,4 +1,4 @@
-package org.eisbm.graphmlsbfc.cli;
+package org.eisbm.graphml2sbgnml.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;

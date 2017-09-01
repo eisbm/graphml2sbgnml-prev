@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>org.eisbm</groupId>
-    <artifactId>graphml2sbgnml-cli</artifactId>
+    <artifactId>sbgnml2graphml-cli</artifactId>
     <version>1.0</version>
 
     <build>
@@ -48,7 +48,7 @@
                     </descriptorRefs>
                     <archive>
                       <manifest>
-                        <mainClass>org.eisbm.graphml2sbgnml.cli.Graphml2sbgnml</mainClass>
+                        <mainClass>org.eisbm.graphml2sbgnml.cli.Sbgnml2graphml</mainClass>
                       </manifest>
                     </archive>
                   </configuration>

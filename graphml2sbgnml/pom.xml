@@ -18,9 +18,9 @@
         <module>graphml</module>
         <module>graphmlsbfc</module>
         <module>graphml2sbgnml-cli</module>
-        <!--<module>graphml2sbgnml-gui</module>
         <module>sbgnml2graphml-cli</module>
-        <module>misc</module> -->
+        <module>graphml2sbgnml-gui</module>
+        <!--<module>misc</module> -->
     </modules>
 
      <build>

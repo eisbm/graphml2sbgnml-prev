@@ -1,4 +1,4 @@
-package org.eisbm.graphmlsbfc.gui;
+package org.eisbm.graphml2sbgnml.gui;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -17,8 +17,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.eisbm.graphmlsbfc.cli.Graphml2sbgnml;
-import org.eisbm.graphmlsbfc.cli.Sbgnml2graphml;
+import org.eisbm.graphml2sbgnml.cli.Graphml2sbgnml;
+import org.eisbm.graphml2sbgnml.cli.Sbgnml2graphml;
 
 import java.io.*;
 

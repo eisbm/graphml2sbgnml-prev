@@ -1,4 +1,4 @@
-package org.eisbm.graphmlsbfc.cli;
+package org.eisbm.graphml2sbgnml.cli;
 
 import org.eisbm.graphmlsbfc.GraphML2SBGNML;
 import org.eisbm.graphmlsbfc.GraphMLModel;
