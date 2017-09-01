@@ -15,28 +15,12 @@
     <version>1.0</version>
 
     <build>
-        <pluginManagement>
             <plugins>
-                <!--<plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-jar-plugin</artifactId>
-                  <version>3.0.2</version>
-                  <configuration>
-                    <archive>
-                      <manifest>
-                        <addClasspath>true</addClasspath>
-                        <classpathPrefix>lib/</classpathPrefix>
-                        <mainClass>org.eisbm.graphml2sbgnmlcli.Graphml2sbgnml</mainClass>
-                      </manifest>
-                    </archive>
-                  </configuration>
-                </plugin>-->
-
+                <!-- generate fat jar -->
                 <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-jar-plugin</artifactId>
                   <version>2.2</version>
-                  <!-- nothing here -->
                 </plugin>
                 <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -61,16 +45,34 @@
                     </execution>
                   </executions>
                 </plugin>
-            </plugins>
-        </pluginManagement>
 
-        
-        <plugins> <!-- did NOT work without this  -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-            </plugin>
-        </plugins>
+                <!-- copy jar to dist folder -->
+                <plugin>
+                  <artifactId>maven-resources-plugin</artifactId>
+                  <version>3.0.2</version>
+                  <inherited>false</inherited>
+                  <executions>
+                    <execution>
+                      <id>copy-jars</id>
+                      <phase>install</phase>
+                      <goals>
+                        <goal>copy-resources</goal>
+                      </goals>
+                      <configuration>
+                        <outputDirectory>${basedir}/../../dist</outputDirectory>
+                        <resources>
+                          <resource>
+                            <directory>target</directory>
+                            <includes>
+                              <include>*.jar</include>
+                            </includes>
+                          </resource>
+                        </resources>
+                      </configuration>
+                    </execution>
+                  </executions>
+              </plugin>
+            </plugins>
     </build>
 
     <dependencies>

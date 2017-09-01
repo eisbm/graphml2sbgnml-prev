@@ -14,6 +14,37 @@
     <artifactId>graphml</artifactId>
     <version>1.0</version>
 
+    <build>
+          <plugins>
+            <!-- copy jar to dist folder -->
+              <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <inherited>false</inherited>
+                <executions>
+                  <execution>
+                    <id>copy-jars</id>
+                    <phase>install</phase>
+                    <goals>
+                      <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                      <outputDirectory>${basedir}/../../dist</outputDirectory>
+                      <resources>
+                        <resource>
+                          <directory>target</directory>
+                          <includes>
+                            <include>*.jar</include>
+                          </includes>
+                        </resource>
+                      </resources>
+                    </configuration>
+                  </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->

@@ -68,62 +68,6 @@
 			    </executions>
 			</plugin>
 
-			<!-- copy all produced jars to dist folder at root -->
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.2</version>
-				<inherited>false</inherited>
-				<executions>
-				  <execution>
-				    <id>copy-jars</id>
-				    <!-- here the phase you need -->
-				    <phase>install</phase>
-				    <goals>
-				      <goal>copy-resources</goal>
-				    </goals>
-				    <configuration>
-				      <outputDirectory>${basedir}/../dist</outputDirectory>
-				      <resources>
-				        <resource>
-				          <directory>graphml/target</directory>
-				          <includes>
-					        <include>*.jar</include>
-					      </includes>
-				        </resource>
-
-				        <resource>
-				          <directory>graphmlsbfc/target</directory>
-				          <includes>
-					        <include>*.jar</include>
-					      </includes>
-				        </resource>
-
-				        <resource>
-				          <directory>graphml2sbgnml-cli/target</directory>
-				          <includes>
-					        <include>*.jar</include>
-					      </includes>
-				        </resource>
-
-				        <resource>
-				          <directory>sbgnml2graphml-cli/target</directory>
-				          <includes>
-					        <include>*.jar</include>
-					      </includes>
-				        </resource>
-
-				        <resource>
-				          <directory>graphml2sbgnml-gui/target</directory>
-				          <includes>
-					        <include>*.jar</include>
-					      </includes>
-				        </resource>
-				      </resources>
-				    </configuration>
-				  </execution>
-				</executions>
-			</plugin>
-
 			<!-- clean must also remove the dist folder created above -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
