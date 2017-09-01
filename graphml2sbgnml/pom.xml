@@ -24,52 +24,125 @@
     </modules>
 
      <build>
-        <pluginManagement>
-            <plugins>
-			    <!-- install local jar the way maven wants -->
-			    <plugin>
-				    <groupId>org.apache.maven.plugins</groupId>
-				    <artifactId>maven-install-plugin</artifactId>
-				    <version>2.5.2</version>
-				    <inherited>false</inherited>
-				    <executions>
-				        <execution>
-				            <id>install-external-libsbgn</id>
-				            <phase>clean</phase>
-				            <configuration>
-				                <file>${project.basedir}/../lib/org.sbgn-with-dependencies.jar</file>
-				                <repositoryLayout>default</repositoryLayout>
-				                <groupId>org.sbgn</groupId>
-				                <artifactId>org.sbgn-with-dependencies</artifactId>
-				                <version>0.3</version>
-				                <packaging>jar</packaging>
-				                <generatePom>true</generatePom>
-				            </configuration>
-				            <goals>
-				                <goal>install-file</goal>
-				            </goals>
-				        </execution>
+        <plugins>
+		    <!-- install local jar libs the way maven wants -->
+		    <plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-install-plugin</artifactId>
+			    <version>2.5.2</version>
+			    <inherited>false</inherited>
+			    <executions>
+			        <execution>
+			            <id>install-external-libsbgn</id>
+			            <phase>clean</phase>
+			            <configuration>
+			                <file>${project.basedir}/../lib/org.sbgn-with-dependencies.jar</file>
+			                <repositoryLayout>default</repositoryLayout>
+			                <groupId>org.sbgn</groupId>
+			                <artifactId>org.sbgn-with-dependencies</artifactId>
+			                <version>0.3</version>
+			                <packaging>jar</packaging>
+			                <generatePom>true</generatePom>
+			            </configuration>
+			            <goals>
+			                <goal>install-file</goal>
+			            </goals>
+			        </execution>
 
-				        <execution>
-				            <id>install-external-sbfc</id>
-				            <phase>clean</phase>
-				            <configuration>
-				                <file>${project.basedir}/../lib/sbfc-1.3.7.jar</file>
-				                <repositoryLayout>default</repositoryLayout>
-				                <groupId>org.sbfc</groupId>
-				                <artifactId>sbfc-1.3.7</artifactId>
-				                <version>1.3.7</version>
-				                <packaging>jar</packaging>
-				                <generatePom>true</generatePom>
-				            </configuration>
-				            <goals>
-				                <goal>install-file</goal>
-				            </goals>
-				        </execution>
-				    </executions>
-				</plugin>
-			</plugins>
-        </pluginManagement>
+			        <execution>
+			            <id>install-external-sbfc</id>
+			            <phase>clean</phase>
+			            <configuration>
+			                <file>${project.basedir}/../lib/sbfc-1.3.7.jar</file>
+			                <repositoryLayout>default</repositoryLayout>
+			                <groupId>org.sbfc</groupId>
+			                <artifactId>sbfc-1.3.7</artifactId>
+			                <version>1.3.7</version>
+			                <packaging>jar</packaging>
+			                <generatePom>true</generatePom>
+			            </configuration>
+			            <goals>
+			                <goal>install-file</goal>
+			            </goals>
+			        </execution>
+			    </executions>
+			</plugin>
+
+			<!-- copy all produced jars to dist folder at root -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<inherited>false</inherited>
+				<executions>
+				  <execution>
+				    <id>copy-jars</id>
+				    <!-- here the phase you need -->
+				    <phase>install</phase>
+				    <goals>
+				      <goal>copy-resources</goal>
+				    </goals>
+				    <configuration>
+				      <outputDirectory>${basedir}/../dist</outputDirectory>
+				      <resources>
+				        <resource>
+				          <directory>graphml/target</directory>
+				          <includes>
+					        <include>*.jar</include>
+					      </includes>
+				        </resource>
+
+				        <resource>
+				          <directory>graphmlsbfc/target</directory>
+				          <includes>
+					        <include>*.jar</include>
+					      </includes>
+				        </resource>
+
+				        <resource>
+				          <directory>graphml2sbgnml-cli/target</directory>
+				          <includes>
+					        <include>*.jar</include>
+					      </includes>
+				        </resource>
+
+				        <resource>
+				          <directory>sbgnml2graphml-cli/target</directory>
+				          <includes>
+					        <include>*.jar</include>
+					      </includes>
+				        </resource>
+
+				        <resource>
+				          <directory>graphml2sbgnml-gui/target</directory>
+				          <includes>
+					        <include>*.jar</include>
+					      </includes>
+				        </resource>
+				      </resources>
+				    </configuration>
+				  </execution>
+				</executions>
+			</plugin>
+
+			<!-- clean must also remove the dist folder created above -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.0.0</version>
+				<inherited>false</inherited>
+				<configuration>
+				  <filesets>
+				    <fileset>
+				      <directory>../</directory>
+				      <includes>
+				        <include>dist/*.jar</include>
+				        <include>dist</include>
+				      </includes>
+				      <followSymlinks>false</followSymlinks>
+				    </fileset>
+				  </filesets>
+				</configuration>
+			</plugin>
+		</plugins>
     </build>
 
     <dependencies>
