@@ -3,25 +3,29 @@
 ## CONTENT
 
 1. PROJECT
-2. INSTALL
-3. USAGE
-4. PROJECT STRUCTURE
-5. CONFIGURATION
+2. REQUIREMENTS
+3. INSTALL
+4. USAGE
+5. PROJECT STRUCTURE
+6. CONFIGURATION
 
 ## 1. PROJECT
 
 Allow convertion of yEd GraphML files from and to SBGN-ML format.
 
-## Requirements
+## 2. REQUIREMENTS
 
-Java 8 SDK
-Maven
+ - Java 8 SDK
+ - Maven
 
-## 2. INSTALL
+## 3. INSTALL
 
 Clone the repository.
 
-`mvn clean install`
+```bash
+cd graphml2sbgnml/graphml2sbgnml
+mvn clean install
+```
 
 JAR files will be put into a `dist` folder at the root.
 
@@ -31,9 +35,9 @@ To generate the javadoc:
 
 Javadoc is placed into the `docs` folder.
 
-## 3. USAGE
+## 4. USAGE
 
-## 4. PROJECT STRUCTURE
+## 5. PROJECT STRUCTURE
 
-## 5. CONFIGURATION
+## 6. CONFIGURATION
 
