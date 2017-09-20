@@ -1,6 +1,7 @@
 package org.eisbm.graphml;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public abstract class GMLProperty implements XMLable{
@@ -14,12 +15,15 @@ public abstract class GMLProperty implements XMLable{
     }
 
     public static GMLProperty createProperty(Element dataElement, GMLRoot root) {
-        NodeList groupList = dataElement.getElementsByTagName("y:ProxyAutoBoundsNode");
-        NodeList shapenodeList = dataElement.getElementsByTagName("y:ShapeNode");
-        NodeList shapeedgeList = dataElement.getElementsByTagName("y:PolyLineEdge");
-        NodeList resourceList = dataElement.getElementsByTagName("y:Resources");
-        if(groupList.getLength() > 0 || shapenodeList.getLength() > 0
-                || shapeedgeList.getLength() > 0 || resourceList.getLength() > 0) {
+
+        boolean hasChild = false;
+        NodeList children = dataElement.getChildNodes();
+        for (int i = 0;i < children.getLength();i++) {
+            if (children.item(i).getNodeType() == Node.ELEMENT_NODE)
+                hasChild = true;
+        }
+
+        if(hasChild) {
             return new GMLComplexProperty(dataElement, root);
         }
         else {

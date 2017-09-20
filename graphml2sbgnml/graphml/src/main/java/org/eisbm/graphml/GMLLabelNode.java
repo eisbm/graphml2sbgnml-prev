@@ -8,21 +8,19 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-public class GMLLabelNode {
-    GMLNode parent;
+public class GMLLabelNode implements GMLNodeFeature {
+    private GMLNode parent;
+    private String id;
 
-    float x, y, width, height;
+    private GMLNodeFeature nodeFeature;
 
-    String shapeType;
-    String label;
-    String id;
 
     public GMLLabelNode(String id, GMLNode parentNode) {
         this.parent = parentNode;
         this.id = id;
     }
 
-    public GMLLabelNode(String id, GMLNode parentNode, Element shapeNodeElement, float xdiff, float ydiff) {
+    public GMLLabelNode(String id, GMLNode parentNode, Element element, float xdiff, float ydiff) {
         this(id, parentNode);
 
 
@@ -32,29 +30,29 @@ public class GMLLabelNode {
 
         // get various attributes
 
-        try {
-            // always take the first Geometry element. GroupNodes have 2, but the 2nd one isn't relevant
-            Element geometryElement = (Element) xpath.evaluate(".//Geometry[1]", shapeNodeElement,
-                    XPathConstants.NODE);
-
-            this.width = Float.parseFloat(geometryElement.getAttribute("width"));
-            this.height = Float.parseFloat(geometryElement.getAttribute("height"));
-
-            this.shapeType = (String) xpath.evaluate(".//Shape[1]/@type", shapeNodeElement,
-                    XPathConstants.STRING);
-
-            this.label = (String) xpath.evaluate(".//NodeLabel[1]/text()[normalize-space(.) != '']",
-                    shapeNodeElement, XPathConstants.STRING);
+        //try {
+            if (element.getTagName().equals("y:GenericNode")) {
+                this.nodeFeature = new GMLGenericNodeFeature(element);
+            }
+            else if(element.getTagName().equals("y:ShapeNode")) {
+                this.nodeFeature = new GMLShapeNodeFeature(element);
+            }
+            else {
+                throw new IllegalStateException("Expected GenericNode or ShapeNode element, but none found. For node: "+this.getId());
+            }
 
             // where should the xdiff be taken from ? this nodelabel, or the one in the parent ?
-            this.x = parentNode.getX() + Float.parseFloat((String) xpath.evaluate(".//NodeLabel[1]/@x",
+            /*this.x = parentNode.getX() + Float.parseFloat((String) xpath.evaluate(".//NodeLabel[1]/@x",
                     shapeNodeElement, XPathConstants.STRING));
             this.y = parentNode.getY() + Float.parseFloat((String) xpath.evaluate(".//NodeLabel[1]/@y",
-                    shapeNodeElement, XPathConstants.STRING));
+                    shapeNodeElement, XPathConstants.STRING));*/
+            this.nodeFeature.setX(parentNode.getX() + xdiff);
+            this.nodeFeature.setY(parentNode.getY() + ydiff);
 
-        } catch (XPathExpressionException e) {
+        /*} catch (XPathExpressionException e) {
             e.printStackTrace();
-        }
+        }*/
+
 
         // adjust the coordinates using x and ydiff that are from the nodeLabel element
         // contained in the parent node
@@ -79,51 +77,56 @@ public class GMLLabelNode {
     }
 
     public float getX() {
-        return x;
+        return this.nodeFeature.getX();
     }
 
     public void setX(float x) {
-        this.x = x;
+        this.nodeFeature.setX(x);
     }
 
     public float getY() {
-        return y;
+        return this.nodeFeature.getY();
     }
 
     public void setY(float y) {
-        this.y = y;
+        this.nodeFeature.setY(y);
     }
 
     public float getWidth() {
-        return width;
+        return this.nodeFeature.getWidth();
     }
 
     public void setWidth(float width) {
-        this.width = width;
+        this.nodeFeature.setWidth(width);
     }
 
     public float getHeight() {
-        return height;
+        return this.nodeFeature.getHeight();
     }
 
     public void setHeight(float height) {
-        this.height = height;
+        this.nodeFeature.setHeight(height);
     }
 
     public String getShapeType() {
-        return shapeType;
+        return this.nodeFeature.getShapeType();
     }
 
     public void setShapeType(String shapeType) {
-        this.shapeType = shapeType;
+        this.nodeFeature.setShapeType(shapeType);
     }
 
     public String getLabel() {
-        return label;
+        return this.nodeFeature.getLabel();
     }
 
     public void setLabel(String label) {
-        this.label = label;
+        this.nodeFeature.setLabel(label);
+    }
+
+    @Override
+    public boolean isSBGNPalette() {
+        return this.nodeFeature.isSBGNPalette();
     }
 
     public void injectIntoParentXML(Element parentXML) {

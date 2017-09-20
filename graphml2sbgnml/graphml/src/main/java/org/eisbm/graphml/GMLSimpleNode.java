@@ -13,9 +13,11 @@ public class GMLSimpleNode extends GMLNode {
     public GMLSimpleNode(Element element, GMLRoot root) {
         super(element, root);
 
+        System.out.println("before cast property "+this.getId()+" value "+this.dataNameMap.get("nodegraphics"));
+        System.out.println(element+" "+element.getTagName());
         Element yedData = ((GMLComplexProperty) this.dataNameMap.get("nodegraphics")).value;
         System.out.println("-----------------> "+yedData);
-        System.out.println(this.x+" "+this.shapeType);
+        System.out.println(this.getX()+" "+this.getShapeType());
 
         /*XPathFactory xpathfactory = XPathFactory.newInstance();
         XPath xpath = xpathfactory.newXPath();

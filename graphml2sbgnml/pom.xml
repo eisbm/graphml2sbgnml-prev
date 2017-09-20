@@ -118,8 +118,6 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <generateProjectInfo>false</generateProjectInfo>
-                            <generateReports>false</generateReports>
                             <outputDirectory>${project.basedir}/../docs</outputDirectory>
                             <resources>
                                 <resource>

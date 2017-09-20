@@ -1,8 +1,6 @@
 package org.eisbm.graphml;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPath;
@@ -12,14 +10,11 @@ import javax.xml.xpath.XPathFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GMLNode extends GMLElement implements HierarchyVisitable {
+public abstract class GMLNode extends GMLElement implements HierarchyVisitable, GMLNodeFeature {
 
-    float x, y, width, height;
+    private GMLNodeFeature nodeFeature;
 
-    String shapeType;
-    String label;
-
-    List<GMLLabelNode> labelNodes;
+    private List<GMLLabelNode> labelNodes;
 
     public GMLNode(String id, GMLRoot root) {
         super(id, root);
@@ -36,18 +31,17 @@ public abstract class GMLNode extends GMLElement implements HierarchyVisitable {
         // get various attributes
 
         try {
-            // always take the first Geometry element. GroupNodes have 2, but the 2nd one isn't relevant
-            Element geometryElement = (Element) xpath.evaluate(".//Geometry[1]", element, XPathConstants.NODE);
-
-            this.x = Float.parseFloat(geometryElement.getAttribute("x"));
-            this.y = Float.parseFloat(geometryElement.getAttribute("y"));
-            this.width = Float.parseFloat(geometryElement.getAttribute("width"));
-            this.height = Float.parseFloat(geometryElement.getAttribute("height"));
-
-            this.shapeType = (String) xpath.evaluate(".//Shape[1]/@type", element, XPathConstants.STRING);
-
-            this.label = (String) xpath.evaluate(".//NodeLabel[1]/text()[normalize-space(.) != '']", element,
-                    XPathConstants.STRING);
+            Element shapeNode = (Element) xpath.evaluate("./data/ShapeNode", element, XPathConstants.NODE);
+            Element genericNode = (Element) xpath.evaluate("./data/GenericNode", element, XPathConstants.NODE);
+            if (genericNode != null) {
+                this.nodeFeature = new GMLGenericNodeFeature(genericNode);
+            }
+            else if(shapeNode != null) {
+                this.nodeFeature = new GMLShapeNodeFeature(shapeNode);
+            }
+            else {
+                throw new IllegalStateException("Expected GenericNode or ShapeNode child element, but none found. For node: "+this.getId());
+            }
 
             // possible additional labels
             // careful here, might go way too deep and get other elements with iconData inside
@@ -61,8 +55,12 @@ public abstract class GMLNode extends GMLElement implements HierarchyVisitable {
                 float xdiff = Float.parseFloat(labelWithIconData.getAttribute("x"));
                 float ydiff = Float.parseFloat(labelWithIconData.getAttribute("y"));
 
-                Element shapeNode = (Element) xpath.evaluate("./Resource[@id='"+iconData+"']//ShapeNode",
+                shapeNode = (Element) xpath.evaluate("./Resource[@id='"+iconData+"']//ShapeNode",
                         resourcesElement, XPathConstants.NODE);
+                if(shapeNode == null) { // if sbgn palette, GenericNode instead of ShapeNode
+                    shapeNode = (Element) xpath.evaluate("./Resource[@id='"+iconData+"']//GenericNode",
+                            resourcesElement, XPathConstants.NODE);
+                }
                 GMLLabelNode unit = new GMLLabelNode(iconData, this, shapeNode, xdiff, ydiff);
                 System.out.println("unit "+unit.getLabel()+" "+unit.getX()+" "+unit.getHeight()+" "+unit.getShapeType());
 
@@ -106,51 +104,55 @@ public abstract class GMLNode extends GMLElement implements HierarchyVisitable {
     }
 
     public float getX() {
-        return x;
+        return this.nodeFeature.getX();
     }
 
     public void setX(float x) {
-        this.x = x;
+        this.nodeFeature.setX(x);
     }
 
     public float getY() {
-        return y;
+        return this.nodeFeature.getY();
     }
 
     public void setY(float y) {
-        this.y = y;
+        this.nodeFeature.setY(y);
     }
 
     public float getWidth() {
-        return width;
+        return this.nodeFeature.getWidth();
     }
 
     public void setWidth(float width) {
-        this.width = width;
+        this.nodeFeature.setWidth(width);
     }
 
     public float getHeight() {
-        return height;
+        return this.nodeFeature.getHeight();
     }
 
     public void setHeight(float height) {
-        this.height = height;
+        this.nodeFeature.setHeight(height);
     }
 
     public String getShapeType() {
-        return shapeType;
+        return this.nodeFeature.getShapeType();
     }
 
     public void setShapeType(String shapeType) {
-        this.shapeType = shapeType;
+        this.nodeFeature.setShapeType(shapeType);
     }
 
     public String getLabel() {
-        return label;
+        return this.nodeFeature.getLabel();
     }
 
     public void setLabel(String label) {
-        this.label = label;
+        this.nodeFeature.setLabel(label);
+    }
+
+    public boolean isSBGNPalette() {
+        return this.nodeFeature.isSBGNPalette();
     }
 
 }

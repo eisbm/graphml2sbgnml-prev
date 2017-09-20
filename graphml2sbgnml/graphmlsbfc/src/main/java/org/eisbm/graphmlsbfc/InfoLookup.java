@@ -113,6 +113,12 @@ public class InfoLookup {
     public GlyphClazz getGlyphClass(GMLNode node) {
         // first try to use configuration to infer value
         try {
+            // bypass everything if node is from SBGN palette
+            // here we don't need configuration or guess, we know for sure
+            if(node.isSBGNPalette()) {
+                return getGlyphClassFromString(node.getShapeType());
+            }
+
             if(!this.hasConfiguration()) {
                 throw new CannotFindPropertyException("No configuration provided");
             }

@@ -127,43 +127,65 @@ public class GraphML2SBGNML extends GeneralConverter {
         if(!node.getLabelNodes().isEmpty()) {
             for(GMLLabelNode labelNode: node.getLabelNodes()) {
                 String shape = labelNode.getShapeType();
-                switch(shape) {
-                    case "roundrectangle":
-                        Glyph stateVar = new Glyph();
-                        stateVar.setClazz("state variable");
-                        stateVar.setId(glyph.getId()+"_"+GMLElement.xmlize(labelNode.getId()));
+                if(shape.equals("roundrectangle")) {
 
-                        Bbox stateVarBox = new Bbox();
-                        stateVarBox.setX(labelNode.getX());
-                        stateVarBox.setY(labelNode.getY());
-                        stateVarBox.setH(labelNode.getHeight());
-                        stateVarBox.setW(labelNode.getWidth());
-                        stateVar.setBbox(stateVarBox);
+                    Glyph stateVar = new Glyph();
+                    stateVar.setClazz("state variable");
+                    stateVar.setId(glyph.getId() + "_" + GMLElement.xmlize(labelNode.getId()));
 
-                        Glyph.State state = new Glyph.State();
-                        state.setValue(labelNode.getLabel());
-                        stateVar.setState(state);
+                    Bbox stateVarBox = new Bbox();
+                    stateVarBox.setX(labelNode.getX());
+                    stateVarBox.setY(labelNode.getY());
+                    stateVarBox.setH(labelNode.getHeight());
+                    stateVarBox.setW(labelNode.getWidth());
+                    stateVar.setBbox(stateVarBox);
 
-                        glyph.getGlyph().add(stateVar);
-                        break;
-                    case "rectangle":
-                        Glyph unitOfInfo = new Glyph();
-                        unitOfInfo.setClazz("unit of information");
-                        unitOfInfo.setId(glyph.getId()+"_"+GMLElement.xmlize(labelNode.getId()));
+                    Glyph.State state = new Glyph.State();
+                    state.setValue(labelNode.getLabel());
+                    stateVar.setState(state);
 
-                        Bbox unitBox = new Bbox();
-                        unitBox.setX(labelNode.getX());
-                        unitBox.setY(labelNode.getY());
-                        unitBox.setH(labelNode.getHeight());
-                        unitBox.setW(labelNode.getWidth());
-                        unitOfInfo.setBbox(unitBox);
+                    glyph.getGlyph().add(stateVar);
+                }
+                else {
 
-                        Label label = new Label();
-                        label.setText(labelNode.getLabel());
-                        unitOfInfo.setLabel(label);
+                    /*case "rectangle":
+                    case "complex":
+                    case "macromolecule":
+                    case "unspecified entity":
+                    case "simple chemical":
+                    case "nucleic acid feature":
+                    case "perturbing agent":*/
 
-                        glyph.getGlyph().add(unitOfInfo);
-                        break;
+                    Glyph unitOfInfo = new Glyph();
+                    unitOfInfo.setClazz("unit of information");
+                    unitOfInfo.setId(glyph.getId()+"_"+GMLElement.xmlize(labelNode.getId()));
+
+                    Bbox unitBox = new Bbox();
+                    unitBox.setX(labelNode.getX());
+                    unitBox.setY(labelNode.getY());
+                    unitBox.setH(labelNode.getHeight());
+                    unitBox.setW(labelNode.getWidth());
+                    unitOfInfo.setBbox(unitBox);
+
+                    Label label = new Label();
+                    label.setText(labelNode.getLabel());
+                    unitOfInfo.setLabel(label);
+
+                    // this is not a standard unit of information
+                    // AF units of info need additional entity for different shapes
+                    if(!shape.equals("rectangle")) {
+                        Glyph.Entity entity = new Glyph.Entity();
+                        if(shape.equals("octagon")) {
+                            entity.setName("complex");
+                        }
+                        else {
+                            entity.setName(shape);
+                        }
+                        unitOfInfo.setEntity(entity);
+                    }
+
+                    glyph.getGlyph().add(unitOfInfo);
+
 
                 }
             }
